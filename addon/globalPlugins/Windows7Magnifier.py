@@ -31,9 +31,11 @@ import win32api
 import win32con
 import api
 import gui
-import config
 import wx
 import tones
+import speech
+
+import Windows7MagnifierConfig
 
 # Win32 Constants - Controlling windows
 #WS_EX_NOACTIVATE = 0x8000000L
@@ -88,22 +90,26 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		# detect it and be pushed to background threads
 		self.mainThread = threading.currentThread()
 		
+		# Load configuration
+		Windows7MagnifierConfig.load()
+		
 		# Add config specs and have NVDA reload the config
-		if "magnifier" not in config.confspec:
-			config.confspec["magnifier"] = {
-				"startWithNVDA" : "boolean(default=True)",
-				"closeWithNVDA" : "boolean(default=True)",
-				"hideMagnifierControls" : "boolean(default=True)",
-				"muteNVDA" : "boolean(default=True)",
-				"mode" : "string(default=Fullscreen)", 
-				"invertColors" : "boolean(default=False)", 
-				"followMouse" : "boolean(default=True)", 
-				"followKeyboard" : "boolean(default=True)", 
-				"followTextInsertion" : "boolean(default=True)",
-				"lensSizeHorizontal" : "integer(default=20,min=10,max=100)",
-				"lensSizeVertical" : "integer(default=25,min=10,max=100)pa",
-			}
-			config.load()
+#		if "magnifier" not in Windows7MagnifierConfig.confspec:
+#			config.confspec["magnifier"] = {
+#				"startWithNVDA" : "boolean(default=True)",
+#				"closeWithNVDA" : "boolean(default=True)",
+#				"hideMagnifierControls" : "boolean(default=True)",
+#				"muteNVDA" : "boolean(default=True)",
+#				"mode" : "string(default=Fullscreen)", 
+#				"invertColors" : "boolean(default=False)", 
+#				"followMouse" : "boolean(default=True)", 
+#				"followKeyboard" : "boolean(default=True)", 
+#				"followTextInsertion" : "boolean(default=True)",
+#				"lensSizeHorizontal" : "integer(default=20,min=10,max=100)",
+#				"lensSizeVertical" : "integer(default=25,min=10,max=100)pa",
+#			}
+#			config.load()
+		ui.message("Config loaded")
 		
 		# Add magnifier options to the NVDA preferences menu
 		prefsMenu = gui.mainFrame.sysTrayIcon.menu.FindItemByPosition(0).SubMenu
@@ -130,7 +136,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		}
 		
 		# Launch the magnifier if it's configured to start w/ NVDA
-		if config.conf["magnifier"]["startWithNVDA"]:
+		if Windows7MagnifierConfig.conf["magnifier"]["startWithNVDA"]:
 			self.configuring = True
 			self.startMagnifier()
 			self.configuring = False
@@ -140,7 +146,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		""" Called when NVDA is done with the plugin
 		"""
 		# Close the magnifier if it's configured to close w/ NVDA
-		if config.conf["magnifier"]["closeWithNVDA"]:
+		if Windows7MagnifierConfig.conf["magnifier"]["closeWithNVDA"]:
 			self.closeMagnifier()
 
 		super(GlobalPlugin, self).terminate()
@@ -199,7 +205,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		# Simulate the Windows (built-in) hotkey for color inversion
 		self._pressKey([winUser.VK_CONTROL, winUser.VK_MENU, 'i'])
 		# Toggle in the config
-		config.conf["magnifier"]["invertColors"] = not config.conf["magnifier"]["invertColors"]
+		Windows7MagnifierConfig.conf["magnifier"]["invertColors"] = not Windows7MagnifierConfig.conf["magnifier"]["invertColors"]
 
 	def isMagnifierRunning(self):
 		""" Determine if the Windows magnifier is running
@@ -287,7 +293,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 				all are False
 		"""
 		self.configuring = True
-		ui.message("Please wait while settings are applied")
+
 		if mode != None and self.detectCurrentMode() != mode:
 			hwnd = self._waitForMagnifierWindow()
 			
@@ -401,7 +407,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 				for windows' appearance
 		"""
 		# Exit if the user has configured windows to stay open
-		if self.configuring or not config.conf["magnifier"]["hideMagnifierControls"]: return
+		if self.configuring or not Windows7MagnifierConfig.conf["magnifier"]["hideMagnifierControls"]: return
 		
 		# Detect if the calling thread is main NVDA thread
 		if threading.currentThread() == self.mainThread:
@@ -533,7 +539,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 	def applyConfig():
 		""" Apply the configured magnifier options set from the NVDA
 			preferences to the (real) magnifier
-		"""
+		"""	
+		ui.message(_("Please wait while the magnifier is configured. You will hear a beep."))
+		speech.pauseSpeech(True)
+
 		# Detect if the calling thread is main NVDA thread
 		if threading.currentThread() == GlobalPlugin._instance.mainThread:
 			# If it is, call this function inside a new thread and exit
@@ -542,25 +551,26 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			t.start()
 			return
 
-		if config.conf["magnifier"]["mode"] == "Lens":
+		if Windows7MagnifierConfig.conf["magnifier"]["mode"] == "Lens":
 			GlobalPlugin._instance.applySettings(
-				mode = config.conf["magnifier"]["mode"],
-				invertColors = config.conf["magnifier"]["invertColors"],
-				lensSizeHorizontal = config.conf["magnifier"]["lensSizeHorizontal"],
-				lensSizeVertical = config.conf["magnifier"]["lensSizeVertical"],
+				mode = Windows7MagnifierConfig.conf["magnifier"]["mode"],
+				invertColors = Windows7MagnifierConfig.conf["magnifier"]["invertColors"],
+				lensSizeHorizontal = Windows7MagnifierConfig.conf["magnifier"]["lensSizeHorizontal"],
+				lensSizeVertical = Windows7MagnifierConfig.conf["magnifier"]["lensSizeVertical"],
 			)
 		else:
 			# Fullscreen and docked have identical settings
 			GlobalPlugin._instance.applySettings(
-				mode = config.conf["magnifier"]["mode"],
-				invertColors = config.conf["magnifier"]["invertColors"],
-				followMouse = config.conf["magnifier"]["followMouse"],
-				followKeyboard = config.conf["magnifier"]["followKeyboard"],
-				followTextInsertion = config.conf["magnifier"]["followTextInsertion"]
+				mode = Windows7MagnifierConfig.conf["magnifier"]["mode"],
+				invertColors = Windows7MagnifierConfig.conf["magnifier"]["invertColors"],
+				followMouse = Windows7MagnifierConfig.conf["magnifier"]["followMouse"],
+				followKeyboard = Windows7MagnifierConfig.conf["magnifier"]["followKeyboard"],
+				followTextInsertion = Windows7MagnifierConfig.conf["magnifier"]["followTextInsertion"]
 			)
 			
 		# beep to indicate readiness
 		tones.beep(550, 50)
+		speech.pauseSpeech(False)
 
 	def _click(self, x, y, hwnd=0):
 		""" Simulate a mouse click
@@ -670,7 +680,7 @@ class MagnifierSettingsDialog(gui.SettingsDialog):
 		# modes dropdown and label
 		self.modes = ["Fullscreen", "Docked", "Lens"]
 		self.modeSelector = wx.Choice(self, wx.NewId(), name=_("&Mode"), choices=self.modes)
-		self.modeSelector.SetSelection(self.modes.index(config.conf["magnifier"]["mode"]))
+		self.modeSelector.SetSelection(self.modes.index(Windows7MagnifierConfig.conf["magnifier"]["mode"]))
 		modeSizer = wx.BoxSizer(wx.HORIZONTAL)
 		modeSizer.Add(wx.StaticText(self, -1, label=_("Mode") + ":"), border=5, flag=wx.RIGHT|wx.ALIGN_CENTER)
 		modeSizer.Add(self.modeSelector)
@@ -704,7 +714,7 @@ class MagnifierSettingsDialog(gui.SettingsDialog):
 			box = wx.CheckBox(self, wx.NewId(), label=_(boxArg[1]))
 
 			self.checkBoxes[name] = box
-			box.SetValue(config.conf["magnifier"][name])
+			box.SetValue(Windows7MagnifierConfig.conf["magnifier"][name])
 			if name.startswith("follow"):
 				# tracking options should be hidden if in Lens mode
 				# Add them to an embedded sizer for easier to hiding
@@ -724,8 +734,8 @@ class MagnifierSettingsDialog(gui.SettingsDialog):
 			self.lensSizeSizer.Add(control)
 			self.lensControls.append(control)
 			
-		self.lensControls[0].SetValue(config.conf["magnifier"]["lensSizeHorizontal"])
-		self.lensControls[1].SetValue(config.conf["magnifier"]["lensSizeVertical"])
+		self.lensControls[0].SetValue(Windows7MagnifierConfig.conf["magnifier"]["lensSizeHorizontal"])
+		self.lensControls[1].SetValue(Windows7MagnifierConfig.conf["magnifier"]["lensSizeVertical"])
 		settingsSizer.Add(self.lensSizeSizer, border=27, flag=wx.BOTTOM)		
 			
 	def postInit(self):
@@ -749,13 +759,13 @@ class MagnifierSettingsDialog(gui.SettingsDialog):
 			ui.message("You must select at least one 'Follow' option")
 		else:
 			for name,box in self.checkBoxes.items():
-				config.conf["magnifier"][name] = box.IsChecked()
-			config.conf["magnifier"]["mode"] = self.getMode()
-			config.conf["magnifier"]["lensSizeHorizontal"] = self.lensControls[0].GetValue()
-			config.conf["magnifier"]["lensSizeVertical"] = self.lensControls[1].GetValue()
+				Windows7MagnifierConfig.conf["magnifier"][name] = box.IsChecked()
+			Windows7MagnifierConfig.conf["magnifier"]["mode"] = self.getMode()
+			Windows7MagnifierConfig.conf["magnifier"]["lensSizeHorizontal"] = self.lensControls[0].GetValue()
+			Windows7MagnifierConfig.conf["magnifier"]["lensSizeVertical"] = self.lensControls[1].GetValue()
 
 			# save the configuration file
-			config.save()
+			Windows7MagnifierConfig.save()
 			
 			# apply the settings
 			GlobalPlugin.applyConfig()

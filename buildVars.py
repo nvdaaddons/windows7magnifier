@@ -10,18 +10,17 @@ addon_info = {
 	"addon-name" : "windows7magnifier",
 	# Add-on description
 	# TRANSLATORS: Summary for this add-on to be shown on installation and add-on information.
-	"addon-summary" : _("This addon integrates configuration options into the standard NVDA GUI"),
+	"addon-summary" : _("Windows 7 Magnifier integration for the NVDA GUI"),
 	# Add-on description
 	# Translators: Long description to be shown for this add-on on installation and add-on information
 	"addon-description" : _("""This addon integrates configuration options into the standard NVDA GUI. To access, select "Preferences", "Magnifier Options" from the NVDA GUI"""),
 	# version
-	"addon-version" : "1.0.0",
+	"addon-version" : "1.0.1",
 	# Author(s)
-	"addon-author" : "Dominic Canare <dom@greenlightgo.org>",
+	"addon-author" : "Dominic Canare <mail@greenlightgo.org>",
 	# URL for the add-on documentation support
-	"addon-url" : "http://www.greenlightgo.org/projects/nvda-magnifier/"
+	"addon-url" : "http://www.greenlightgo.org/projects/nvda/"
 }
-
 
 import os.path
 
