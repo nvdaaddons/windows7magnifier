@@ -18,6 +18,14 @@ msgstr ""
 "X-Generator: Poedit 1.5.5\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 
+#. Translators: Aural feedback when zooming in
+msgid "Larger"
+msgstr ""
+
+#. Translators: Aural feedback when zooming out
+msgid "Smaller"
+msgstr ""
+
 #. Translators: Menu Option
 msgid "M&agnifier settings..."
 msgstr ""

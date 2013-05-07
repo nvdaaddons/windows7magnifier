@@ -28,12 +28,15 @@ import ui
 import globalPluginHandler
 import winUser
 import win32api
+import ctypes
 import win32con
 import api
 import gui
 import wx
 import tones
 import speech
+
+from logHandler import log 
 
 import Windows7MagnifierConfig
 
@@ -43,7 +46,7 @@ import Windows7MagnifierConfig
 #WS_EX_WINDOWEDGE = 0x00000100L 
 #WS_EX_APPWINDOW = 0x00040000L
 #WS_EX_LAYERED = 0x00080000
-WS_EX_TOOLWINDOW = 0x00000080L
+#WS_EX_TOOLWINDOW = 0x00000080L
 
 GWL_EXSTYLE = -20
 WM_CLOSE = 0x10
@@ -54,6 +57,7 @@ SWP_NOMOVE = 0x02
 SWP_NOZORDER = 0x04
 SWP_SHOWWINDOW = 0x40
 SW_FORCEMINIMIZE = 11
+SW_MINIMIZE = 6
 
 GW_CHILD = 5
 
@@ -92,25 +96,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		
 		# Load configuration
 		Windows7MagnifierConfig.load()
-		
-		# Add config specs and have NVDA reload the config
-#		if "magnifier" not in Windows7MagnifierConfig.confspec:
-#			config.confspec["magnifier"] = {
-#				"startWithNVDA" : "boolean(default=True)",
-#				"closeWithNVDA" : "boolean(default=True)",
-#				"hideMagnifierControls" : "boolean(default=True)",
-#				"muteNVDA" : "boolean(default=True)",
-#				"mode" : "string(default=Fullscreen)", 
-#				"invertColors" : "boolean(default=False)", 
-#				"followMouse" : "boolean(default=True)", 
-#				"followKeyboard" : "boolean(default=True)", 
-#				"followTextInsertion" : "boolean(default=True)",
-#				"lensSizeHorizontal" : "integer(default=20,min=10,max=100)",
-#				"lensSizeVertical" : "integer(default=25,min=10,max=100)pa",
-#			}
-#			config.load()
-		ui.message("Config loaded")
-		
+				
 		# Add magnifier options to the NVDA preferences menu
 		prefsMenu = gui.mainFrame.sysTrayIcon.menu.FindItemByPosition(0).SubMenu
 		item = prefsMenu.FindItem(_("M&agnifier settings..."))
@@ -140,7 +126,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			self.configuring = True
 			self.startMagnifier()
 			self.configuring = False
-			ui.message("Magnifier launched")
+			ui.message(_("Magnifier launched"))
+			
+		self.configuring = False
 		
 	def terminate(self): 
 		""" Called when NVDA is done with the plugin
@@ -177,6 +165,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			@param gesture: the gesture which caused this action
 		""" # Simulate the Windows (built-in) hotkey for zooming in
 		self._pressKey([winUser.VK_LWIN, VK_OEM_PLUS])
+		try:
+			tones.beep(800, 50)
+		except:
+			pass
 		
 		# Windows will automatically launch the magnifier on zoom adjust
 		# If this happens, the windows need to be hidden (if configured)
@@ -188,7 +180,11 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		"""
 		# Simulate the Windows (built-in) hotkey for zooming out
 		self._pressKey([winUser.VK_LWIN, VK_OEM_MINUS])
-
+		try:
+			tones.beep(400, 50)
+		except:
+			pass
+		
 		# Windows will automatically launch the magnifier on zoom adjust
 		# If this happens, the windows need to be hidden (if configured)
 		self.hideWindows()
@@ -213,41 +209,37 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			@rtype: boolean
 		"""
 		# If the magnifier has a valid hwnd, then it is running
-		return 0 != winUser.user32.FindWindowA("MagUIClass", "Magnifier")
+		#return 0 != winUser.user32.FindWindowA("MagUIClass", "Magnifier")
+		return None != searchProcessList("magnify.exe")
 
 	def startMagnifier(self, block=True, applyConfig=True):
 		""" Launch the Windows magnifier"
 			@param block: don't return until confirmed running
 			@param type: boolean
 		"""
-		block = block or applyConfig
-		if not block and threading.currentThread() == self.mainThread:
-			# If it is, call this function inside a new thread and exit
-			t = threading.Thread(target=self.startMagnifier)
-			t.daemon = True
-			t.start()
-			return
-		else:
-			# don't launch if already running
-			if not self.isMagnifierRunning():
-				ui.message("Launching magnifier")
-				# Spawning the magnify process manually results in a
-				# black lens/dock window on occassion. This appears to
-				# be a bug in the Magnifier API - as a work around, try
-				# to launch from the Windows run dialog
-				self._releaseKeys(['m', 'i', 'n'], allModifiers=True)
-				self._pressKey([winUser.VK_LWIN, 'r'])
-				hwnd = self._waitForWindow("#32770", "Run")
-				if hwnd != 0:
-					winUser.setForegroundWindow(hwnd)
-					self._type("magnify")
-					self._pressKey([winUser.VK_RETURN])
-					time.sleep(0.1)
-				else:
-					# fallback
-					subprocess.Popen(['magnify.exe'])
+		# don't launch if already running
+		if not self.isMagnifierRunning():
+			ui.message("Launching magnifier")
+			# Maybe try this?
+			# winKernel.CreateProcessAsUser(None, None, "magnify.exe", None, None, True, creationFlags, None, None, startupInfo, processInformation):
+			
+			# Spawning the magnify process manually results in a
+			# black lens/dock window on occassion. This appears to
+			# be a bug in the Magnifier API - as a work around, try
+			# to launch from the Windows run dialog
+			self._releaseKeys(['m', 'i', 'n'], allModifiers=True)
+			self._pressKey([winUser.VK_LWIN, 'r'])
+			hwnd = self._waitForWindow("#32770", "Run")
+			if hwnd != 0:
+				winUser.setForegroundWindow(hwnd)
+				self._type("magnify")
+				self._pressKey([winUser.VK_RETURN])
+			else:
+				# fallback
+				subprocess.Popen(['magnify.exe'])
+			time.sleep(0.25)
 
-		if block:
+		if block or applyConfig:
 			self._waitForMagnifierWindow()
 				
 		if applyConfig:
@@ -293,7 +285,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 				all are False
 		"""
 		self.configuring = True
-
+		self.startMagnifier(block=True, applyConfig=False)
+		
 		if mode != None and self.detectCurrentMode() != mode:
 			hwnd = self._waitForMagnifierWindow()
 			
@@ -301,16 +294,23 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 				self._pressKey([winUser.VK_CONTROL, winUser.VK_MENU, 'f'])
 			if mode == "Docked":
 				self._pressKey([winUser.VK_CONTROL, winUser.VK_MENU, 'd'])
-				time.sleep(3)
 			elif mode == "Lens":
 				self._pressKey([winUser.VK_CONTROL, winUser.VK_MENU, 'l'])
 
+			log.debug("Magnifier - Mode changed to %s" % mode)
+			time.sleep(1)
+			
 			for i in range(250):
 				if self.detectCurrentMode() == mode: break
 				time.sleep(0.02)
-		
-		# Hide the windows (if configured)
-		self.hideWindows(numberOfChecks=2, delayBetweenChecks=0.1)
+			
+			# When switching between modes, the window likes to be
+			# shuffled. Without this, other settings do not get applied
+			# properly
+			mainWindow = self._waitForMagnifierWindow()
+			self._hideWindow(mainWindow, True)
+			self._showWindow(mainWindow)
+			self._hideWindow(mainWindow, True)
 		
 		# If tracking options are specified, at least one must be enabled
 		inputOK = False
@@ -349,7 +349,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		controls["okButton"].click()
 		# Pause for a moment - helps with windows behaving
 		time.sleep(0.1)
-		
+
 		self.configuring = False
 		self.hideWindows()
 		
@@ -369,10 +369,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		mainWindow = self._waitForMagnifierWindow()
 		# show it (brings it to the front and gives it focus
 		icon = winUser.user32.FindWindowA("MagUIIconClass", None)
-		self._showWindow(icon, True, True)
+		#self._showWindow(icon, True)
 		# click on the title bar (trying to help ensure focus)
-		self._click(35, 15, icon)
-		self._showWindow(mainWindow, True, True)
+		#self._click(35, 15, icon)
+		self._showWindow(mainWindow, True)
 
 		controls = winUser.getWindow(mainWindow, GW_CHILD)
 		# short pause to help make sure the window has focus
@@ -388,10 +388,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		controls = {}
 		for name,controlID in self.controlIDs.items():
 			controls[name] = Win32Control(optionsWindow, controlID)
-
+			
 		return optionsWindow, controls
 
-	def hideWindows(self, numberOfChecks=50, delayBetweenChecks=0.1):
+	def hideWindows(self, numberOfChecks=2, delayBetweenChecks=0.1, minimizeForce=False):
 		""" Hide the (real) magnifier's control windows. This includes
 			the standard window, the magnifier icon, and the settings
 			dialog.
@@ -417,11 +417,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			t.start()
 			return
 
+		time.sleep(1)
 		# Window classes and names to search for
-		self._convertToToolWindow(self._waitForMagnifierWindow())
 		windowArgs = [
 			("MagUIClass", "Magnifier"),
-			("MagUIIconClass", "Magnifier"),
 		]
 		
 		# Check for windows repeatedly, hide them if they are found
@@ -473,15 +472,15 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		for key in keyCodes:
 			winUser.user32.keybd_event(key, key, KEYEVENTF_KEYUP, 0)
 			
-	def _hideWindow(self, hwnd):
+	def _hideWindow(self, hwnd, forceMinimize=True):
 		""" Internal convenience function to hide a window
 			@param hwnd: A handle to the window to be hidden
 		"""
 		if self.configuring == True: return
 		winUser.user32.SetWindowPos(hwnd, 0, -500, -500, 0, 0, SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE)
-		winUser.user32.ShowWindow(hwnd, SW_FORCEMINIMIZE)
+		winUser.user32.ShowWindow(hwnd, SW_MINIMIZE)
 		
-	def _showWindow(self, hwnd, makeForeground=True, waitForVisible=False):
+	def _showWindow(self, hwnd, makeForeground=True):
 		""" Internal convenience function to make a window visible
 			@param hwnd: A handle to the window to be shown
 			@param makeForeground: if True bring the window to the front
@@ -492,9 +491,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		if makeForeground:
 			winUser.setForegroundWindow(hwnd)
 				
-#		if waitForVisible:
-#			self._waitForWindow(hwnd=hwnd)
-
 	def _waitForMagnifierWindow(self, maxChecks=100, delayBetweenChecks=0.1):
 		""" Block until the main magnifier window is available
 			@param maxChecks: the maximum number of times to check for a
@@ -539,38 +535,35 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 	def applyConfig():
 		""" Apply the configured magnifier options set from the NVDA
 			preferences to the (real) magnifier
-		"""	
-		ui.message(_("Please wait while the magnifier is configured. You will hear a beep."))
-		speech.pauseSpeech(True)
-
-		# Detect if the calling thread is main NVDA thread
-		if threading.currentThread() == GlobalPlugin._instance.mainThread:
-			# If it is, call this function inside a new thread and exit
-			t = threading.Thread(target=GlobalPlugin.applyConfig)
-			t.daemon = True
-			t.start()
-			return
-
+		"""
 		if Windows7MagnifierConfig.conf["magnifier"]["mode"] == "Lens":
-			GlobalPlugin._instance.applySettings(
+			gui.ExecAndPump(
+				GlobalPlugin._instance.applySettings,
 				mode = Windows7MagnifierConfig.conf["magnifier"]["mode"],
 				invertColors = Windows7MagnifierConfig.conf["magnifier"]["invertColors"],
 				lensSizeHorizontal = Windows7MagnifierConfig.conf["magnifier"]["lensSizeHorizontal"],
-				lensSizeVertical = Windows7MagnifierConfig.conf["magnifier"]["lensSizeVertical"],
+				lensSizeVertical = Windows7MagnifierConfig.conf["magnifier"]["lensSizeVertical"]
 			)
 		else:
 			# Fullscreen and docked have identical settings
-			GlobalPlugin._instance.applySettings(
+			gui.ExecAndPump(
+				GlobalPlugin._instance.applySettings,
 				mode = Windows7MagnifierConfig.conf["magnifier"]["mode"],
 				invertColors = Windows7MagnifierConfig.conf["magnifier"]["invertColors"],
 				followMouse = Windows7MagnifierConfig.conf["magnifier"]["followMouse"],
 				followKeyboard = Windows7MagnifierConfig.conf["magnifier"]["followKeyboard"],
 				followTextInsertion = Windows7MagnifierConfig.conf["magnifier"]["followTextInsertion"]
 			)
+
+		ui.message("Settings applied")
 			
 		# beep to indicate readiness
-		tones.beep(550, 50)
-		speech.pauseSpeech(False)
+		for i in range(3):
+			try:
+				time.sleep(.1)
+				tones.beep(550 + i*50, 50)
+			except Exception, e:
+				pass
 
 	def _click(self, x, y, hwnd=0):
 		""" Simulate a mouse click
@@ -597,15 +590,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		# restore the previous mouse position
 		win32api.SetCursorPos(lastPos)
 		
-	def _convertToToolWindow(self, hwnd):
-		""" Make the window focusable, but hide it form the taskbar and
-			taskswitcher
-			@param hwnd: the window to convert
-		"""
-		# window must be hidden before it's window style is adjusted
-		winUser.user32.ShowWindow(hwnd, winUser.SW_HIDE)
-		win32api.SetWindowLong(hwnd, GWL_EXSTYLE, WS_EX_TOOLWINDOW)
-
 	__gestures={
 		"kb:NVDA+shift+m": "toggleMagnifier",
 		"kb:NVDA+plus": "zoomIn",
@@ -769,8 +753,8 @@ class MagnifierSettingsDialog(gui.SettingsDialog):
 			
 			# apply the settings
 			GlobalPlugin.applyConfig()
-			
-			super(MagnifierSettingsDialog, self).onOk(evt) 
+
+			super(MagnifierSettingsDialog, self).onOk(evt)
 			
 	def getMode(self):
 		""" Convenience method to obtain currently selected mode
@@ -797,3 +781,36 @@ def MAKELPARAM(low, high):
 	"""
 	shift = 32 if sys.maxsize > 2**32 else 16
 	return (high << shift) | low
+
+
+TH32CS_SNAPPROCESS = 0x00000002
+class PROCESSENTRY32(ctypes.Structure):
+	_fields_ = [
+		("dwSize", ctypes.c_ulong),
+		("cntUsage", ctypes.c_ulong),
+		("th32ProcessID", ctypes.c_ulong),
+		("th32DefaultHeapID", ctypes.c_ulong),
+		("th32ModuleID", ctypes.c_ulong),
+		("cntThreads", ctypes.c_ulong),
+		("th32ParentProcessID", ctypes.c_ulong),
+		("pcPriClassBase", ctypes.c_ulong),
+		("dwFlags", ctypes.c_ulong),
+		("szExeFile", ctypes.c_char * 260)
+	]
+
+def searchProcessList(imageName):
+	# See http://msdn2.microsoft.com/en-us/library/ms686701.aspx
+	CreateToolhelp32Snapshot = ctypes.windll.kernel32.CreateToolhelp32Snapshot
+	Process32First = ctypes.windll.kernel32.Process32First
+	Process32Next = ctypes.windll.kernel32.Process32Next
+	CloseHandle = ctypes.windll.kernel32.CloseHandle
+	hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0)
+	pe32 = PROCESSENTRY32()
+	pe32.dwSize = ctypes.sizeof(PROCESSENTRY32)
+	gotProcess = Process32First(hProcessSnap, ctypes.byref(pe32))
+	while gotProcess != win32con.FALSE:
+		if pe32.szExeFile.lower() == imageName.lower(): return pe32
+		gotProcess = Process32Next(hProcessSnap, ctypes.byref(pe32))
+		
+	CloseHandle(hProcessSnap)
+	return None
