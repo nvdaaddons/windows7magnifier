@@ -35,7 +35,8 @@ import gui
 import wx
 import tones
 import speech
-
+import addonHandler
+addonHandler.initTranslation()
 from logHandler import log 
 
 import Windows7MagnifierConfig

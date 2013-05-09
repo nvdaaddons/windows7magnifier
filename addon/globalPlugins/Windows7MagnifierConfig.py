@@ -2,7 +2,9 @@ import config
 import os, sys
 
 import globalVars
-
+import addonHandler
+import addonHandler
+addonHandler.initTranslation()
 from cStringIO import StringIO 
 from configobj import ConfigObj, ConfigObjError 
 from logHandler import log 
