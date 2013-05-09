@@ -7,7 +7,15 @@
 #
 
 import appModuleHandler
+import os
 import config
+from configobj import *
+
+config_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'windows7magnifier.ini')
+config = ConfigObj()
+config.filename = config_file
 
 class AppModule(appModuleHandler.AppModule):
-	sleepMode = config.conf["magnifier"]["muteNVDA"]
+
+	def sleep(self):
+		sleepMode = config.conf["magnifier"]["muteNVDA"]
