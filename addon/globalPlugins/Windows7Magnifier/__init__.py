@@ -649,7 +649,7 @@ class MagnifierSettingsDialog(gui.SettingsDialog):
 		self.settingsSizer = settingsSizer
 		
 		# modes dropdown and label
-		self.modes = ["Fullscreen", "Docked", "Lens"]
+		self.modes = [_("Fullscreen"), _("Docked"), _("Lens")]
 		self.modeSelector = wx.Choice(self, wx.NewId(), name=_("&Mode"), choices=self.modes)
 		self.modeSelector.SetSelection(self.modes.index(Windows7MagnifierConfig.conf["magnifier"]["mode"]))
 		modeSizer = wx.BoxSizer(wx.HORIZONTAL)
