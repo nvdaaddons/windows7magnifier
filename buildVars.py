@@ -15,7 +15,7 @@ addon_info = {
 	# Translators: Long description to be shown for this add-on on installation and add-on information
 	"addon-description" : _("""This addon integrates configuration options into the standard NVDA GUI. To access, select "Preferences", "Magnifier Options" from the NVDA GUI"""),
 	# version
-	"addon-version" : "1.0.2",
+	"addon-version" : "1.0.3",
 	# Author(s)
 	"addon-author" : "Dominic Canare <mail@greenlightgo.org>",
 	# URL for the add-on documentation support
@@ -26,8 +26,10 @@ import os.path
 
 # Define the python files that are the sources of your add-on.
 # You can use glob expressions here, they will be expanded.
-pythonSources = [os.path.join("addon", "appModules", "*.py"),
-    os.path.join("addon", "globalPlugins", "*.py")]
+pythonSources = [
+	os.path.join("addon", "appModules", "*.py"),
+	os.path.join("addon", "globalPlugins", "*.py")
+]
 
 # Files that contain strings for translation. Usually your python sources
 i18nSources = pythonSources + ["buildVars.py"]

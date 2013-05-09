@@ -18,6 +18,9 @@ msgstr ""
 "X-Generator: Poedit 1.5.5\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 
+msgid "Magnifier Options"
+msgstr "Opciones de la lupa"
+
 #: addon\globalPlugins\Windows7Magnifier.py:102
 #: addon\globalPlugins\Windows7Magnifier.py:104
 msgid "M&agnifier settings..."
@@ -92,9 +95,6 @@ msgstr "Este complemento incorpora opciones de configuración en la interfaz est
 
 #~ msgid "You must select at least one 'Follow' option"
 #~ msgstr "Debes escoger, al menos, una de las siguientes opciones"
-
-#~ msgid "Magnifier Options"
-#~ msgstr "Opciones de Lupa"
 
 #~ msgid "&Start the magnifier when NVDA starts"
 #~ msgstr "&Cargar la Lupa cuando se inicie NVDA"

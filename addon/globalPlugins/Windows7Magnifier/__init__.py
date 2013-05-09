@@ -209,8 +209,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			@returns: True if running, False if not
 			@rtype: boolean
 		"""
-		# If the magnifier has a valid hwnd, then it is running
-		#return 0 != winUser.user32.FindWindowA("MagUIClass", "Magnifier")
 		return None != searchProcessList("magnify.exe")
 
 	def startMagnifier(self, block=True, applyConfig=True):
@@ -220,28 +218,13 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		"""
 		# don't launch if already running
 		if not self.isMagnifierRunning():
-			ui.message("Launching magnifier")
+			ui.message(_("Launching magnifier"))
 			# Maybe try this?
-			# winKernel.CreateProcessAsUser(None, None, "magnify.exe", None, None, True, creationFlags, None, None, startupInfo, processInformation):
-			
-			# Spawning the magnify process manually results in a
-			# black lens/dock window on occassion. This appears to
-			# be a bug in the Magnifier API - as a work around, try
-			# to launch from the Windows run dialog
-			self._releaseKeys(['m', 'i', 'n'], allModifiers=True)
-			self._pressKey([winUser.VK_LWIN, 'r'])
-			hwnd = self._waitForWindow("#32770", "Run")
-			if hwnd != 0:
-				winUser.setForegroundWindow(hwnd)
-				self._type("magnify")
-				self._pressKey([winUser.VK_RETURN])
-			else:
-				# fallback
-				subprocess.Popen(['magnify.exe'])
-			time.sleep(0.25)
+			subprocess.call("start magnify", shell=True)
 
 		if block or applyConfig:
 			self._waitForMagnifierWindow()
+			time.sleep(1)
 				
 		if applyConfig:
 			self.applyConfig()
@@ -267,7 +250,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		"""
 		# Find the window, send it the standard win32 message to close
 		winUser.sendMessage(
-			winUser.user32.FindWindowA("MagUIClass", "Magnifier"),
+			winUser.user32.FindWindowA("MagUIClass", None),
 			WM_CLOSE, 0, 0
 		)
 
@@ -383,7 +366,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 
 		# Wait for options window to be visible (but don't wait forever)
-		optionsWindow = self._waitForWindow(windowName="Magnifier Options")
+		optionsWindow = self._waitForWindow(windowName=_("Magnifier Options"))
 	
 		# Grab the contros so we can return them to the caller
 		controls = {}
@@ -421,7 +404,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		time.sleep(1)
 		# Window classes and names to search for
 		windowArgs = [
-			("MagUIClass", "Magnifier"),
+			("MagUIClass", None),
 		]
 		
 		# Check for windows repeatedly, hide them if they are found
@@ -478,7 +461,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			@param hwnd: A handle to the window to be hidden
 		"""
 		if self.configuring == True: return
-		winUser.user32.SetWindowPos(hwnd, 0, -500, -500, 0, 0, SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE)
 		winUser.user32.ShowWindow(hwnd, SW_MINIMIZE)
 		
 	def _showWindow(self, hwnd, makeForeground=True):
@@ -487,7 +469,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			@param makeForeground: if True bring the window to the front
 			@param waitForVisible: if True block until window is visible
 		"""
-		winUser.user32.SetWindowPos(hwnd, 0, 100, 100, 0, 0, SWP_NOSIZE|SWP_SHOWWINDOW)
 		winUser.user32.ShowWindow(hwnd, winUser.SW_SHOWNORMAL)
 		if makeForeground:
 			winUser.setForegroundWindow(hwnd)
@@ -498,7 +479,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 				window
 			@param delayBetweenChecks: how long to pause between checks
 		"""
-		mainWindow = self._waitForWindow(windowClass="MagUIClass", windowName="Magnifier", maxChecks=maxChecks, delayBetweenChecks=delayBetweenChecks)
+		mainWindow = self._waitForWindow(windowClass="MagUIClass", windowName=None, maxChecks=maxChecks, delayBetweenChecks=delayBetweenChecks)
 		return mainWindow
 		
 	def _waitForWindow(self, windowClass=None, windowName=None, maxChecks=100, delayBetweenChecks=0.1):
@@ -509,6 +490,11 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 				window
 			@param delayBetweenChecks: how long to pause between checks
 		"""
+		if windowClass != None:
+			windowClass = windowClass.encode("ascii", "ignore")
+		if windowName != None:
+			windowName = windowName.encode("ascii", "ignore")
+		log.debug("Waiting for window '%s', '%s'" % (windowClass, windowName))
 		hwnd = 0
 		for i in range(maxChecks):
 			if hwnd == 0:
@@ -675,15 +661,15 @@ class MagnifierSettingsDialog(gui.SettingsDialog):
 		# Make a list of checkboxes for iterative creation
 		boxArgs = [
 			None,
-			("startWithNVDA", "&Start the magnifier when NVDA starts"),
-			("closeWithNVDA", "&Close the magnifier when NVDA starts"),
-			("hideMagnifierControls", "&Hide the magnifier control window"),
-			("muteNVDA", "Mute NVDA when the magnifier control window has focus (requires reload)"),
+			("startWithNVDA", _("&Start the magnifier when NVDA starts")),
+			("closeWithNVDA", _("&Close the magnifier when NVDA starts")),
+			("hideMagnifierControls", _("&Hide the magnifier control window")),
+			("muteNVDA", _("Mute NVDA when the magnifier control window has focus (requires reload)")),
 			None,
-			("invertColors", "&Invert colors"),
-			("followMouse", "Follow the mouse &pointer"),
-			("followKeyboard", "Follow the &keyboard focus"),
-			("followTextInsertion", "Follow the &text insertion point")
+			("invertColors", _("&Invert colors")),
+			("followMouse", _("Follow the mouse &pointer")),
+			("followKeyboard", _("Follow the &keyboard focus")),
+			("followTextInsertion", _("Follow the &text insertion point"))
 		]
 		
 		# keep track of the checkboxes so they can be easily referenced
