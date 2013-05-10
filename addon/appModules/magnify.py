@@ -7,15 +7,11 @@
 #
 
 import appModuleHandler
-import os
-import config
-from configobj import *
+import os, sys
 
-config_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'windows7magnifier.ini')
-config = ConfigObj()
-config.filename = config_file
+parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(parentdir, "globalPlugins", "Windows7Magnifier"))
+import Windows7MagnifierConfig
 
 class AppModule(appModuleHandler.AppModule):
-
-	def sleep(self):
-		sleepMode = config.conf["magnifier"]["muteNVDA"]
+	sleepMode = Windows7MagnifierConfig.conf["magnifier"]["muteNVDA"]

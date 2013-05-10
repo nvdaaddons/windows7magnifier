@@ -75,3 +75,5 @@ def save():
 		log.warning("Could not save configuration - probably read only file system") 
 		log.debugWarning("", exc_info=True) 
 		raise e
+
+load()

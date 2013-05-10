@@ -97,9 +97,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		# detect it and be pushed to background threads
 		self.mainThread = threading.currentThread()
 		
-		# Load configuration
-		Windows7MagnifierConfig.load()
-				
 		# Add magnifier options to the NVDA preferences menu
 		prefsMenu = gui.mainFrame.sysTrayIcon.menu.FindItemByPosition(0).SubMenu
 		item = prefsMenu.FindItem(_("M&agnifier settings..."))
