@@ -731,7 +731,13 @@ class MagnifierSettingsDialog(gui.SettingsDialog):
 		else:
 			for name,box in self.checkBoxes.items():
 				Windows7MagnifierConfig.conf["magnifier"][name] = box.IsChecked()
-			Windows7MagnifierConfig.conf["magnifier"]["mode"] = self.getMode()
+			
+			# The mode saved in the config file should not be translated
+			# It should be consistent across languages
+			for mode in ["Fullscreen", "Docked", "Lens"]:
+				if self.getMode() == _(mode):
+				Windows7MagnifierConfig.conf["magnifier"]["mode"] = mode
+
 			Windows7MagnifierConfig.conf["magnifier"]["lensSizeHorizontal"] = self.lensControls[0].GetValue()
 			Windows7MagnifierConfig.conf["magnifier"]["lensSizeVertical"] = self.lensControls[1].GetValue()
 
