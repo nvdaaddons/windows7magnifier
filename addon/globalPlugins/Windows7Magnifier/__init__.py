@@ -35,6 +35,7 @@ import gui
 import wx
 import tones
 import speech
+import keyboardHandler
 import addonHandler
 addonHandler.initTranslation()
 from logHandler import log 
@@ -59,6 +60,7 @@ SWP_NOZORDER = 0x04
 SWP_SHOWWINDOW = 0x40
 SW_FORCEMINIMIZE = 11
 SW_MINIMIZE = 6
+SW_SHOWMINNOACTIVE = 7
 
 GW_CHILD = 5
 
@@ -203,6 +205,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		self._pressKey([winUser.VK_CONTROL, winUser.VK_MENU, 'i'])
 		# Toggle in the config
 		Windows7MagnifierConfig.conf["magnifier"]["invertColors"] = not Windows7MagnifierConfig.conf["magnifier"]["invertColors"]
+		try:
+			tones.beep(1000, 50)
+		except:
+			pass
 
 	def isMagnifierRunning(self):
 		""" Determine if the Windows magnifier is running
@@ -220,7 +226,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		if not self.isMagnifierRunning():
 			ui.message(_("Launching magnifier"))
 			# Maybe try this?
-			subprocess.call("start magnify", shell=True)
+			dummy = None
+			ctypes.windll.kernel32.Wow64DisableWow64FsRedirection(dummy)
+			subprocess.Popen(["C:\\Windows\\System32\\Magnify.exe"], shell=True)
 
 		if block or applyConfig:
 			self._waitForMagnifierWindow()
@@ -228,7 +236,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 				
 		if applyConfig:
 			self.applyConfig()
-					
+
 	def detectCurrentMode(self):
 		""" Try to determine the current executing mode. This works by 
 			looking for mode-specific windows.
@@ -292,9 +300,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			# shuffled. Without this, other settings do not get applied
 			# properly
 			mainWindow = self._waitForMagnifierWindow()
-			self._hideWindow(mainWindow, True)
+			self._hideWindow(mainWindow)
 			self._showWindow(mainWindow)
-			self._hideWindow(mainWindow, True)
+			self._hideWindow(mainWindow)
 		
 		# If tracking options are specified, at least one must be enabled
 		inputOK = False
@@ -323,16 +331,21 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			name = boxArgs[0]
 			# if its value is specified in the arguments
 			# AND if there's a control for it, set it appropriately
+			if not name in controls:
+				log.debug("Magnifier: Could not find control %s" % name)
 			if boxArgs[1] != None and name in controls:
+				log.debug("Magnifier: Setting %s %s" % (name, boxArgs[1]))
 				controls[name].setChecked(boxArgs[1])
 		
 		# Set the lens size
 		if lensSizeHorizontal != None: controls["lensSizeHorizontal"].setTrackbarValue(lensSizeHorizontal - 10)
 		if lensSizeVertical != None: controls["lensSizeVertical"].setTrackbarValue(100 - lensSizeVertical)
 		
-		controls["okButton"].click()
+		# Close the dialog
+		time.sleep(0.25)
+		keyboardHandler.KeyboardInputGesture.fromName("enter").send()
 		# Pause for a moment - helps with windows behaving
-		time.sleep(0.1)
+		time.sleep(0.25)
 
 		self.configuring = False
 		self.hideWindows()
@@ -345,17 +358,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		# make sure the magnifier is running
 		self.startMagnifier(block=True, applyConfig=False)
 
-		# The (real) Magnifier window does not use standard controls...
-		# So the most reliable method for opening its settings is to
-		# show the main window and tab over to the settings button.
-		
 		# So... find the window
 		mainWindow = self._waitForMagnifierWindow()
-		# show it (brings it to the front and gives it focus
-		icon = winUser.user32.FindWindowA("MagUIIconClass", None)
-		#self._showWindow(icon, True)
-		# click on the title bar (trying to help ensure focus)
-		#self._click(35, 15, icon)
 		self._showWindow(mainWindow, True)
 
 		controls = winUser.getWindow(mainWindow, GW_CHILD)
@@ -363,7 +367,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		time.sleep(0.1)
 		# click on the settings button
 		self._click(160, 15, controls)
-
 
 		# Wait for options window to be visible (but don't wait forever)
 		optionsWindow = self._waitForWindow(windowName=_("Magnifier Options"))
@@ -456,12 +459,12 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		for key in keyCodes:
 			winUser.user32.keybd_event(key, key, KEYEVENTF_KEYUP, 0)
 			
-	def _hideWindow(self, hwnd, forceMinimize=True):
+	def _hideWindow(self, hwnd):
 		""" Internal convenience function to hide a window
 			@param hwnd: A handle to the window to be hidden
 		"""
 		if self.configuring == True: return
-		winUser.user32.ShowWindow(hwnd, SW_MINIMIZE)
+		winUser.user32.ShowWindow(hwnd, SW_SHOWMINNOACTIVE)
 		
 	def _showWindow(self, hwnd, makeForeground=True):
 		""" Internal convenience function to make a window visible
@@ -469,7 +472,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			@param makeForeground: if True bring the window to the front
 			@param waitForVisible: if True block until window is visible
 		"""
-		winUser.user32.ShowWindow(hwnd, winUser.SW_SHOWNORMAL)
+		winUser.user32.ShowWindow(hwnd, win32con.SW_RESTORE)
 		if makeForeground:
 			winUser.setForegroundWindow(hwnd)
 				
@@ -736,7 +739,7 @@ class MagnifierSettingsDialog(gui.SettingsDialog):
 			# It should be consistent across languages
 			for mode in ["Fullscreen", "Docked", "Lens"]:
 				if self.getMode() == _(mode):
-				Windows7MagnifierConfig.conf["magnifier"]["mode"] = mode
+					Windows7MagnifierConfig.conf["magnifier"]["mode"] = mode
 
 			Windows7MagnifierConfig.conf["magnifier"]["lensSizeHorizontal"] = self.lensControls[0].GetValue()
 			Windows7MagnifierConfig.conf["magnifier"]["lensSizeVertical"] = self.lensControls[1].GetValue()

@@ -18,6 +18,8 @@ msgstr ""
 "X-Generator: Poedit 1.5.5\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 
+# This is case sensitive and MUST MATCH the magnifier options dialog
+# title in this language
 msgid "Magnifier Options"
 msgstr "Opciones de la lupa"
 
