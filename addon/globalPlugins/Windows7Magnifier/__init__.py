@@ -224,10 +224,11 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			ui.message(_("Launching magnifier"))
 			
 			# Force 64-bit version on 64-bit OS
-			oldValue = None
-			ctypes.windll.kernel32.Wow64DisableWow64FsRedirection(oldValue)
-			subprocess.Popen(["C:\\Windows\\System32\\Magnify.exe"], shell=True)
-			ctypes.windll.kernel32.Wow64RevertWow64FsRedirection(oldValue)
+			winDir = os.path.expandvars("%WINDIR%")
+			if os.path.isfile(winDir + "\\Sysnative\\Magnify.exe"):
+				process = subprocess.Popen([winDir + "\\Sysnative\\Magnify.exe"], shell=True)
+			else:
+				process = subprocess.Popen([winDir + "\\System32\\Magnify.exe"], shell=True)
 
 		if block or applyConfig:
 			self._waitForMagnifierWindow()
