@@ -37,6 +37,8 @@ import tones
 import speech
 import keyboardHandler
 import addonHandler
+import shellapi
+
 addonHandler.initTranslation()
 from logHandler import log 
 
@@ -226,9 +228,11 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			# Force 64-bit version on 64-bit OS
 			winDir = os.path.expandvars("%WINDIR%")
 			if os.path.isfile(winDir + "\\Sysnative\\Magnify.exe"):
-				process = subprocess.Popen([winDir + "\\Sysnative\\Magnify.exe"], shell=True)
+				exe = winDir + u"\\Sysnative\\Magnify.exe"
 			else:
-				process = subprocess.Popen([winDir + "\\System32\\Magnify.exe"], shell=True)
+				exe = winDir + u"\\System32\\Magnify.exe"
+
+			shellapi.ShellExecute(None, None, exe, subprocess.list2cmdline([exe]), None, 0)
 
 		if block or applyConfig:
 			self._waitForMagnifierWindow()
