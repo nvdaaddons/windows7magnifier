@@ -222,10 +222,12 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		# don't launch if already running
 		if not self.isMagnifierRunning():
 			ui.message(_("Launching magnifier"))
-			# Maybe try this?
-			dummy = None
-			ctypes.windll.kernel32.Wow64DisableWow64FsRedirection(dummy)
+			
+			# Force 64-bit version on 64-bit OS
+			oldValue = None
+			ctypes.windll.kernel32.Wow64DisableWow64FsRedirection(oldValue)
 			subprocess.Popen(["C:\\Windows\\System32\\Magnify.exe"], shell=True)
+			ctypes.windll.kernel32.Wow64RevertWow64FsRedirection(oldValue)
 
 		if block or applyConfig:
 			self._waitForMagnifierWindow()
