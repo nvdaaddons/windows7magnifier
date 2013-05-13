@@ -154,7 +154,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			@param gesture: the gesture which caused this action
 		"""
 		if self.isMagnifierRunning():
-			ui.message("Closing magnifier")
+			ui.message(_("Closing magnifier"))
 			# Pause so the speech can complete uninterrupted
 			time.sleep(1)
 			self.closeMagnifier()
@@ -549,7 +549,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 				followTextInsertion = Windows7MagnifierConfig.conf["magnifier"]["followTextInsertion"]
 			)
 
-		ui.message("Settings applied")
+		ui.message(_("Settings applied"))
 			
 		# beep to indicate readiness
 		for i in range(3):
@@ -669,7 +669,7 @@ class MagnifierSettingsDialog(gui.SettingsDialog):
 		boxArgs = [
 			None,
 			("startWithNVDA", _("&Start the magnifier when NVDA starts")),
-			("closeWithNVDA", _("&Close the magnifier when NVDA starts")),
+			("closeWithNVDA", _("&Close the magnifier when NVDA is terminated")),
 			("hideMagnifierControls", _("&Hide the magnifier control window")),
 			("muteNVDA", _("Mute NVDA when the magnifier control window has focus (requires reload)")),
 			None,
@@ -734,7 +734,7 @@ class MagnifierSettingsDialog(gui.SettingsDialog):
 				trackingSelected = True
 				break
 		if self.getMode() != "Lens" and not trackingSelected:
-			ui.message("You must select at least one 'Follow' option")
+			ui.message(_("You must select at least one 'Follow' option"))
 		else:
 			for name,box in self.checkBoxes.items():
 				Windows7MagnifierConfig.conf["magnifier"][name] = box.IsChecked()
