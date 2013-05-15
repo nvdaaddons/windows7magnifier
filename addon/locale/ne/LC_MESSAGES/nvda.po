@@ -18,17 +18,13 @@ msgstr ""
 "X-Generator: Poedit 1.5.5\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 
-#. Translators: Aural feedback when zooming in
-msgid "Larger"
-msgstr "केही ठूलो"
-
-#. Translators: Aural feedback when zooming out
-msgid "Smaller"
-msgstr "केही सानो"
-
 #. Translators: Menu Option
 msgid "M&agnifier settings..."
 msgstr "&दृष्टीवर्धकको अनुकूलता..."
+
+#. Translators: Menu Option
+msgid "Magnifier settings"
+msgstr "दृष्टीवर्धकको अनुकूलता"
 
 #. Translators: Message to indicate the magnifier is being launched
 msgid "Launching magnifier"
@@ -42,31 +38,11 @@ msgstr "दृष्टीवर्धक सक्रिय भयो ।"
 msgid "Closing magnifier"
 msgstr "दृष्टीवर्धक बन्द हुदैछ ।"
 
-#. Translators: Name of Magnifier Window
-msgid "Magnifier"
-msgstr "दृष्टीवर्धन"
-
-#. Translators: Window name of Magnifier rendering window when in Fullscreen mode
-msgid "Screen Magnifier Fullscreen Window"
-msgstr "पर्दा दृष्टीवर्धक- सम्पूर्ण पर्दा"
-
-#. Translators: Window name of Magnifier rendering window when in Lens mode
-msgid "Screen Magnifier Lens Window"
-msgstr "पर्दा दृष्टीवर्धक - लेन्स सञ्झ्याल"
-
-#. Translators: Window name of Magnifier rendering window when in Docked mode
-msgid "Screen Magnifier Window"
-msgstr "पर्दा दृष्टीवर्धक सन्झ्याल"
-
-#. Translators: Message to indicate that settings are being applied
-msgid "Please wait while settings are applied"
-msgstr "पर्खनु होस् है, अनुकूलता कार्यान्वयन हुदैछ ।"
-
 #. Translators: Error message to indicate that at least one tracking option must be supplied
 msgid "You must select at least one 'Follow' option"
 msgstr "तपाइले कम्तिमा एउटा विकल्पलाई रोज्नु पर्ने हुन्छ ।।"
 
-#. Translators: Window name of the Magnifier Options window
+#. Translators: Window name of the Magnifier Options window. This is case sensitive and MUST match the (Windows) Magnifier Options dialog name exactly.
 msgid "Magnifier Options"
 msgstr "दृष्टीवर्धकका विकल्पहरू"
 
@@ -79,11 +55,15 @@ msgid "&Mode"
 msgstr "&स्वरूप"
 
 #. Translators: Option label
+msgid "Mode"
+msgstr "स्वरूप"
+
+#. Translators: Option label
 msgid "&Start the magnifier when NVDA starts"
 msgstr "नेत्रवाणी सँगै दृष्टीवर्धक &सुरु होस् । "
 
 #. Translators: Option label
-msgid "&Close the magnifier when NVDA starts"
+msgid "&Close the magnifier when NVDA is terminated"
 msgstr "नेत्रवाणी &बन्द भए पछी दृष्टीवर्धक सुरु होस्।"
 
 #. Translators: Option label
@@ -92,9 +72,7 @@ msgstr "दृष्टीवर्धक नियन्त्रण सन्�
 
 #. Translators: Option label
 msgid "Mute NVDA when the magnifier control window has focus (requires reload)"
-msgstr ""
-"दृष्टीवर्धक नियन्त्रण सन्झ्यालमा  केन्द्रीत् हुँदा नेत्रवाणीलाई मौन राख (पुनः प्रारम्भ गर्नु "
-"पर्छ ) ।"
+msgstr "दृष्टीवर्धक नियन्त्रण सन्झ्यालमा  केन्द्रीत् हुँदा नेत्रवाणीलाई मौन राख (पुनः प्रारम्भ गर्नु पर्छ ) ।"
 
 #. Translators: Option label
 msgid "&Invert colors"
@@ -119,3 +97,19 @@ msgstr "लेन्सको &चौडाइ ।"
 #. Translators: Option Label
 msgid "Lens h&eight"
 msgstr "लेन्सको &उचाई ।"
+
+#. Translators: Message to indicate that settings have been applied
+msgid "Settings applied"
+msgstr ""
+
+#. Translators: Fullscreen Mode option
+msgid "Fullscreen"
+msgstr ""
+
+#. Translators: Lens Mode
+msgid "Lens"
+msgstr ""
+
+#. Translators: Docked Mode option
+msgid "Docked"
+msgstr ""

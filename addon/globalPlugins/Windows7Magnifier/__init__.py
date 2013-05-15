@@ -225,14 +225,15 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		if not self.isMagnifierRunning():
 			ui.message(_("Launching magnifier"))
 			
-			# Force 64-bit version on 64-bit OS
 			winDir = os.path.expandvars("%WINDIR%")
-			if os.path.isfile(winDir + "\\Sysnative\\Magnify.exe"):
+			try:
+				# Force 64-bit version on 64-bit OS
 				exe = winDir + u"\\Sysnative\\Magnify.exe"
-			else:
+				shellapi.ShellExecute(None, None, exe, subprocess.list2cmdline([exe]), None, 0)
+			except:
+				# Fallback
 				exe = winDir + u"\\System32\\Magnify.exe"
-
-			shellapi.ShellExecute(None, None, exe, subprocess.list2cmdline([exe]), None, 0)
+				shellapi.ShellExecute(None, None, exe, subprocess.list2cmdline([exe]), None, 0)
 
 		if block or applyConfig:
 			self._waitForMagnifierWindow()
@@ -656,8 +657,9 @@ class MagnifierSettingsDialog(gui.SettingsDialog):
 		self.settingsSizer = settingsSizer
 		
 		# modes dropdown and label
-		self.modes = [_("Fullscreen"), _("Docked"), _("Lens")]
-		self.modeSelector = wx.Choice(self, wx.NewId(), name=_("&Mode"), choices=self.modes)
+		self.modes = ["Fullscreen", "Docked", "Lens"]
+		self.modeDescriptions = [_("Fullscreen"), _("Docked"), _("Lens")]
+		self.modeSelector = wx.Choice(self, wx.NewId(), name=_("&Mode"), choices=self.modeDescriptions)
 		self.modeSelector.SetSelection(self.modes.index(Windows7MagnifierConfig.conf["magnifier"]["mode"]))
 		modeSizer = wx.BoxSizer(wx.HORIZONTAL)
 		modeSizer.Add(wx.StaticText(self, -1, label=_("Mode") + ":"), border=5, flag=wx.RIGHT|wx.ALIGN_CENTER)
@@ -689,7 +691,7 @@ class MagnifierSettingsDialog(gui.SettingsDialog):
 				settingsSizer.Add(wx.StaticLine(self), 0, wx.ALL|wx.EXPAND, 5)				
 				continue
 			name = boxArg[0]
-			box = wx.CheckBox(self, wx.NewId(), label=_(boxArg[1]))
+			box = wx.CheckBox(self, wx.NewId(), label=boxArg[1])
 
 			self.checkBoxes[name] = box
 			box.SetValue(Windows7MagnifierConfig.conf["magnifier"][name])
@@ -739,12 +741,7 @@ class MagnifierSettingsDialog(gui.SettingsDialog):
 			for name,box in self.checkBoxes.items():
 				Windows7MagnifierConfig.conf["magnifier"][name] = box.IsChecked()
 			
-			# The mode saved in the config file should not be translated
-			# It should be consistent across languages
-			for mode in ["Fullscreen", "Docked", "Lens"]:
-				if self.getMode() == _(mode):
-					Windows7MagnifierConfig.conf["magnifier"]["mode"] = mode
-
+			Windows7MagnifierConfig.conf["magnifier"]["mode"] = self.getMode()
 			Windows7MagnifierConfig.conf["magnifier"]["lensSizeHorizontal"] = self.lensControls[0].GetValue()
 			Windows7MagnifierConfig.conf["magnifier"]["lensSizeVertical"] = self.lensControls[1].GetValue()
 
