@@ -7,109 +7,124 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Windows 7 Magnifier Addon\n"
 "Report-Msgid-Bugs-To: 'nvda-translations@freelists.org'\n"
-"POT-Creation-Date: 2013-05-09 19:54+0200\n"
-"PO-Revision-Date: 2013-05-09 19:59+0100\n"
+"POT-Creation-Date: 2013-05-19 00:10+0200\n"
+"PO-Revision-Date: 2013-05-19 00:16+0100\n"
 "Last-Translator: Noelia Ruiz Martínez <nrm1977@gmail.com>\n"
 "Language-Team: \n"
-"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
 "X-Generator: Poedit 1.5.5\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
 
-#. Translators: Menu Option
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:104
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:106
 msgid "M&agnifier settings..."
 msgstr "Configuración de l&a Lupa..."
 
-#. Translators: Menu Option
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:106
 msgid "Magnifier settings"
 msgstr "Configuración de la Lupa"
 
-#. Translators: Message to indicate the magnifier is being launched
-msgid "Launching magnifier"
-msgstr "Iniciando Lupa"
-
-#. Translators: Message to indicate the magnifier has been launched
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:131
 msgid "Magnifier launched"
 msgstr "Lupa iniciada"
 
-#. Translators: Message to indicate the magnifier is being closed
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:157
 msgid "Closing magnifier"
 msgstr "Cerrando Lupa"
 
-#. Translators: Error message to indicate that at least one tracking option must be supplied
-msgid "You must select at least one 'Follow' option"
-msgstr "Debes escoger, al menos, una de las siguientes opciones"
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:226
+msgid "Launching magnifier"
+msgstr "Iniciando Lupa"
 
-#. Translators: Window name of the Magnifier Options window. This is case sensitive and MUST match the (Windows) Magnifier Options dialog name exactly.
+#. Wait for options window to be visible (but don't wait forever)
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:377
 msgid "Magnifier Options"
 msgstr "Opciones de la lupa"
 
-#. Translators: Title for Options Dialog
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:553
+msgid "Settings applied"
+msgstr "Configuración aplicada"
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:650
 msgid "NVDA Magnifier Addon Options"
 msgstr "Opciones para el complemento Lupa en NVDA"
 
-#. Translators: Option label
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:661
+msgid "Fullscreen"
+msgstr "Pantalla completa"
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:661
+msgid "Docked"
+msgstr "Acoplado"
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:661
+msgid "Lens"
+msgstr "Lente"
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:662
 msgid "&Mode"
 msgstr "&Modo"
 
-#. Translators: Option label
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:665
 msgid "Mode"
 msgstr "Modo"
 
-#. Translators: Option label
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:673
 msgid "&Start the magnifier when NVDA starts"
 msgstr "&Cargar la Lupa cuando se inicie NVDA"
 
-#. Translators: Option label
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:674
 msgid "&Close the magnifier when NVDA is terminated"
-msgstr "&Descargar la Lupa cuando se inicie NVDA"
+msgstr "&Descargar la Lupa al salir de NVDA"
 
-#. Translators: Option label
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:675
 msgid "&Hide the magnifier control window"
 msgstr "Oc&ultar la ventana para el control de la Lupa"
 
-#. Translators: Option label
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:676
 msgid "Mute NVDA when the magnifier control window has focus (requires reload)"
 msgstr "&Silenciar NVDA cuando la ventana para el control de la Lupa tenga el foco"
 
-#. Translators: Option label
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:678
 msgid "&Invert colors"
 msgstr "In&vertir colores"
 
-#. Translators: Option label
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:679
 msgid "Follow the mouse &pointer"
 msgstr "Seguir al &puntero del ratón"
 
-#. Translators: Option label
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:680
 msgid "Follow the &keyboard focus"
 msgstr "Seguir al &foco del teclado"
 
-#. Translators: Option label
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:681
 msgid "Follow the &text insertion point"
 msgstr "Seguir al punto de inserción de &texto"
 
-#. Translators: Option label
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:711
 msgid "Lens &width"
 msgstr "A&nchura de lente"
 
-#. Translators: Option Label
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:711
 msgid "Lens h&eight"
 msgstr "A&ltura de lente"
 
-#. Translators: Message to indicate that settings have been applied
-msgid "Settings applied"
-msgstr ""
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:739
+msgid "You must select at least one 'Follow' option"
+msgstr "Debes escoger, al menos, una de las siguientes opciones"
 
-#. Translators: Fullscreen Mode option
-msgid "Fullscreen"
-msgstr ""
+#. Add-on description
+#. TRANSLATORS: Summary for this add-on to be shown on installation and add-on information.
+#: buildVars.py:13
+msgid "Windows 7 Magnifier integration for the NVDA GUI"
+msgstr "Incorporación de la lupa de Windows 7 a la interfaz gráfica de NVDA"
 
-#. Translators: Lens Mode
-msgid "Lens"
-msgstr ""
+#. Add-on description
+#. Translators: Long description to be shown for this add-on on installation and add-on information
+#: buildVars.py:16
+msgid "This addon integrates configuration options into the standard NVDA GUI. To access, select \"Preferences\", \"Magnifier Options\" from the NVDA GUI"
+msgstr "Este complemento incorpora opciones de configuración a la interfaz gráfica estándar de NVDA. Para acceder, ve a Preferencias, Configuración de la lupa, desde el menú de NVDA"
 
-#. Translators: Docked Mode option
-msgid "Docked"
-msgstr ""
