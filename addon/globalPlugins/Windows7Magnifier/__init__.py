@@ -9,7 +9,7 @@
 # To access, select "Preferences", "Magnifier Options" from the NVDA GUI
 #
 # Shortcuts:
-# 	NVDA+SHIFT+m:	Toggle the screen magnifier
+# 	NVDA+SHIFT+g:	Toggle the screen magnifier
 # 	NVDA+i:			Toggle color inversion
 # 	NVDA+plus:		Zoom in
 # 	NVDA+minus:		Zoom out
@@ -586,7 +586,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		win32api.SetCursorPos(lastPos)
 		
 	__gestures={
-		"kb:NVDA+shift+m": "toggleMagnifier",
+		"kb:NVDA+shift+g": "toggleMagnifier",
 		"kb:NVDA+plus": "zoomIn",
 		"kb:NVDA+=": "zoomIn",
 		"kb:NVDA+-": "zoomOut",
