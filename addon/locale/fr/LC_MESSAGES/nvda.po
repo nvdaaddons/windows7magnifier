@@ -1,0 +1,136 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Windows 7 Magnifier Addon\n"
+"Report-Msgid-Bugs-To: 'nvda-translations@freelists.org'\n"
+"POT-Creation-Date: 2013-05-19 00:10+0200\n"
+"PO-Revision-Date: 2013-05-24 14:12+0100\n"
+"Last-Translator: Rémy Ruiz <remyruiz@gmail.com>\n"
+"Language-Team: Rémy Ruiz <remyruiz@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"X-Generator: Poedit 1.5.5\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:104
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:106
+msgid "M&agnifier settings..."
+msgstr "Paramètres de l&a Loupe..."
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:106
+msgid "Magnifier settings"
+msgstr "Paramètres de la Loupe"
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:131
+msgid "Magnifier launched"
+msgstr "Loupe lancé"
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:157
+msgid "Closing magnifier"
+msgstr "Fermeture de la Loupe"
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:226
+msgid "Launching magnifier"
+msgstr "Lancement de la Loupe"
+
+#. Wait for options window to be visible (but don't wait forever)
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:377
+msgid "Magnifier Options"
+msgstr "Options de la loupe"
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:553
+msgid "Settings applied"
+msgstr "Paramètres appliqués"
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:650
+msgid "NVDA Magnifier Addon Options"
+msgstr "Options pour le module complémentaire Loupe dans NVDA"
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:661
+msgid "Fullscreen"
+msgstr "Plein écran"
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:661
+msgid "Docked"
+msgstr "Ancré"
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:661
+msgid "Lens"
+msgstr "Lentille"
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:662
+msgid "&Mode"
+msgstr "&Mode"
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:665
+msgid "Mode"
+msgstr "Mode"
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:673
+msgid "&Start the magnifier when NVDA starts"
+msgstr "&Lancer la loupe au démarrage de NVDA"
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:674
+msgid "&Close the magnifier when NVDA is terminated"
+msgstr "&Fermer la loupe lorsque vous quittez NVDA"
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:675
+msgid "&Hide the magnifier control window"
+msgstr "Ma&squer la fenêtre pour le contrôle de la Loupe"
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:676
+msgid "Mute NVDA when the magnifier control window has focus (requires reload)"
+msgstr ""
+"Faire taire NVDA lorsque la fenêtre pour le contrôle de la Loupe a le focus "
+"(nécessite le rechargement)"
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:678
+msgid "&Invert colors"
+msgstr "In&verser les couleurs"
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:679
+msgid "Follow the mouse &pointer"
+msgstr "Suivre le &pointeur de la souris"
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:680
+msgid "Follow the &keyboard focus"
+msgstr "Suivre le &focus du clavier"
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:681
+msgid "Follow the &text insertion point"
+msgstr "Suivre le &point d'insertion de texte"
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:711
+msgid "Lens &width"
+msgstr "L&argeur de la lentille"
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:711
+msgid "Lens h&eight"
+msgstr "H&auteur de la lentille"
+
+#: addon\globalPlugins\Windows7Magnifier\__init__.py:739
+msgid "You must select at least one 'Follow' option"
+msgstr "Vous devez choisir au moins l'une des options suivantes"
+
+#. Add-on description
+#. TRANSLATORS: Summary for this add-on to be shown on installation and add-on information.
+#: buildVars.py:13
+msgid "Windows 7 Magnifier integration for the NVDA GUI"
+msgstr "Incorporation de la loupe de Windows 7 à l'interface graphique de NVDA"
+
+#. Add-on description
+#. Translators: Long description to be shown for this add-on on installation and add-on information
+#: buildVars.py:16
+msgid ""
+"This addon integrates configuration options into the standard NVDA GUI. To "
+"access, select \"Preferences\", \"Magnifier Options\" from the NVDA GUI"
+msgstr ""
+"Ce module complémentaire intègre des options de configuratión a l'interface "
+"graphique standard de NVDA. Pour accéder, allez dans Préférences, Paramètres "
+"de la loupe, dans le menu de NVDA"
