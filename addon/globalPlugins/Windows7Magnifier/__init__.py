@@ -590,6 +590,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		"kb:NVDA+plus": "zoomIn",
 		"kb:NVDA+=": "zoomIn",
 		"kb:NVDA+-": "zoomOut",
+		"kb:NVDA+numpadPlus": "zoomIn",
+		"kb:NVDA+numpadMinus": "zoomOut",
 		"kb:NVDA+i": "invert",
 	}
 
