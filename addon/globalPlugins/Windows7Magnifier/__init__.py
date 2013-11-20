@@ -39,6 +39,9 @@ import keyboardHandler
 import addonHandler
 import shellapi
 
+_addonDir = os.path.join(os.path.dirname(__file__), "..", "..").decode("mbcs")
+_curAddon = addonHandler.Addon(_addonDir)
+_addonSummary = _curAddon.manifest['summary']
 addonHandler.initTranslation()
 from logHandler import log 
 
@@ -83,6 +86,9 @@ TBM_SETPOSNOTIFY = 0x422
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 	""" Please see description at the top of this file.
 	"""
+
+	scriptCategory = unicode(_addonSummary)
+
 	_instance = None
 	
 	def __init__(self):
