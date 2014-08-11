@@ -156,9 +156,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		gui.mainFrame._popupSettingsDialog(MagnifierSettingsDialog)
 
 	def script_toggleMagnifier(self, gesture):
-		""" Kill the magnifier if it's running, start it if it's not
-			@param gesture: the gesture which caused this action
-		"""
 		if self.isMagnifierRunning():
 			ui.message(_("Closing magnifier"))
 			# Pause so the speech can complete uninterrupted
@@ -166,12 +163,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			self.closeMagnifier()
 		else:
 			self.startMagnifier()
+	script_toggleMagnifier.__doc__="Toggles magnifier on and off."
 
 	def script_zoomIn(self, gesture):
-		""" 
-			Increase the zoom level
-			@param gesture: the gesture which caused this action
-		""" # Simulate the Windows (built-in) hotkey for zooming in
+		# Simulate the Windows (built-in) hotkey for zooming in
 		self._pressKey([winUser.VK_LWIN, VK_OEM_PLUS])
 		try:
 			tones.beep(800, 50)
@@ -181,11 +176,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		# Windows will automatically launch the magnifier on zoom adjust
 		# If this happens, the windows need to be hidden (if configured)
 		self.hideWindows()
-		
+	script_zoomIn.__doc__="Increase the zoom level."
+
 	def script_zoomOut(self, gesture):
-		""" Decrease the zoom level
-			@param gesture: the gesture which caused this action
-		"""
 		# Simulate the Windows (built-in) hotkey for zooming out
 		self._pressKey([winUser.VK_LWIN, VK_OEM_MINUS])
 		try:
@@ -196,11 +189,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		# Windows will automatically launch the magnifier on zoom adjust
 		# If this happens, the windows need to be hidden (if configured)
 		self.hideWindows()
+	script_zoomOut.__doc__="Decrease the zoom level."
 
-	def script_invert(self, guesture):
-		""" Invert the screen colors
-			@param gesture: the gesture which caused this action
-		"""
+	def script_invert(self, gesture):
 		# Windows does not automatically launch the magnifier for color
 		# inversion, so we need to start it
 		if not self.isMagnifierRunning():
@@ -214,6 +205,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			tones.beep(1000, 50)
 		except:
 			pass
+	script_invert.__doc__="Invert the screen colors."
 
 	def isMagnifierRunning(self):
 		""" Determine if the Windows magnifier is running
@@ -510,7 +502,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			windowName = windowName.encode("ascii", "ignore")
 		log.debug("Waiting for window '%s', '%s'" % (windowClass, windowName))
 		hwnd = 0
-		for i in range(maxChecks):
+		for i in range(maxChecks): # For best results, change to xrange please.
+			# Play progress tones while magnifier is loading.
+			if i%10 == 0: tones.beep(440, 100)
 			if hwnd == 0:
 				hwnd = winUser.user32.FindWindowA(windowClass, windowName)
 				
