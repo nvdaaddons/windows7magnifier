@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 # Build customizations
 # Change this file instead of sconstruct or manifest files, whenever possible.
 
@@ -15,11 +17,13 @@ addon_info = {
 	# Translators: Long description to be shown for this add-on on installation and add-on information
 	"addon-description" : _("""This addon integrates configuration options into the standard NVDA GUI. To access, select "Preferences", "Magnifier Options" from the NVDA GUI"""),
 	# version
-	"addon-version" : "1.1.1",
+	"addon-version" : "1.2-dev",
 	# Author(s)
-	"addon-author" : "Dominic Canare <mail@greenlightgo.org>",
+	"addon-author" : "Dominic Canare <mail@greenlightgo.org> and nvda addons team",
 	# URL for the add-on documentation support
 	"addon-url" : "http://www.greenlightgo.org/projects/nvda/"
+	# Documentation file name
+	"addon_docFileName" : "readme.html",
 }
 
 import os.path

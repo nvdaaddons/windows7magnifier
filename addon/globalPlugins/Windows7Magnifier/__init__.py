@@ -5,16 +5,7 @@
 # You can read the licence by clicking Help->License in the NVDA menu
 # or by visiting http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 #
-# This addon integrates configuration options into the standard NVDA GUI
-# To access, select "Preferences", "Magnifier Options" from the NVDA GUI
-#
-# Shortcuts:
-# 	NVDA+SHIFT+g:	Toggle the screen magnifier
-# 	NVDA+i:			Toggle color inversion
-# 	NVDA+plus:		Zoom in
-# 	NVDA+minus:		Zoom out
-#
-########################################################################
+
 
 # Standard Python Imports
 import os
@@ -592,7 +583,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		"kb:NVDA+-": "zoomOut",
 		"kb:NVDA+numpadPlus": "zoomIn",
 		"kb:NVDA+numpadMinus": "zoomOut",
-		"kb:NVDA+i": "invert",
+		"kb:NVDA+shift+i": "invert",
 	}
 
 class Win32Control:
